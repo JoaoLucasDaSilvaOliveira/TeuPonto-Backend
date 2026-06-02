@@ -5,7 +5,7 @@ import "github.com/google/uuid"
 type User struct {
 	*Auditable //embedded
 	userID uuid.UUID
-	roleDefinition RoleDefinition 
+	roleDefinition *RoleDefinition 
 }
 
 func (u *User) GetUserID() uuid.UUID{
@@ -26,7 +26,7 @@ func (u *User) GetPermissions() []Permission {
 	return permissionSlice
 }
 
-func NewUser(roleDef RoleDefinition) (*User, error) {
+func NewUser(roleDef *RoleDefinition) (*User, error) {
 	auditable, err := NewAuditable()
 
 	if err != nil {

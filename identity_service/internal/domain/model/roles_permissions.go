@@ -163,17 +163,17 @@ type RoleDefinition struct {
 }
 
 //factories
-func NewRoleDefinition(role Role, selectedPermissions ...Permission) (RoleDefinition, error) {
+func NewRoleDefinition(role Role, selectedPermissions ...Permission) (*RoleDefinition, error) {
 	allowedPermissions, exists := allowedPermissionsByRole[role]
 	if !exists {
-		return RoleDefinition{}, fmt.Errorf("%w: %s", exceptions.ErrInvalidRole, role)
+		return &RoleDefinition{}, fmt.Errorf("%w: %s", exceptions.ErrInvalidRole, role)
 	}
 
 	permissions := NewPermissionSet()
 
 	for _, permission := range selectedPermissions {
 		if !allowedPermissions.Has(permission) {
-			return RoleDefinition{}, fmt.Errorf(
+			return &RoleDefinition{}, fmt.Errorf(
 				"%w: %s",
 				exceptions.ErrPermissionNotAllowed,
 				role,
@@ -183,28 +183,28 @@ func NewRoleDefinition(role Role, selectedPermissions ...Permission) (RoleDefini
 		permissions.Add(permission)
 	}
 
-	return RoleDefinition{
+	return &RoleDefinition{
 		role:        role,
 		permissions: permissions,
 	}, nil
 }
 
-func NewCompanyDefaultRoleDefinition() RoleDefinition {	
-	return RoleDefinition{
+func NewCompanyDefaultRoleDefinition() *RoleDefinition {	
+	return &RoleDefinition{
 		role: COMPANY_ROLE,
 		permissions: allowedPermissionsByRole[COMPANY_ROLE],
 	}
 }
 
-func NewSupervisorDefaultRoleDefinition() RoleDefinition {
-	return RoleDefinition{
+func NewSupervisorDefaultRoleDefinition() *RoleDefinition {
+	return &RoleDefinition{
 		role: SUPERVISOR_ROLE,
 		permissions: allowedPermissionsByRole[SUPERVISOR_ROLE],
 	}
 }
 
-func NewWorkerDefaultRoleDefinition() RoleDefinition {
-	return RoleDefinition{
+func NewWorkerDefaultRoleDefinition() *RoleDefinition {
+	return &RoleDefinition{
 		role: WORKER_ROLE,
 		permissions: allowedPermissionsByRole[WORKER_ROLE],
 	}
