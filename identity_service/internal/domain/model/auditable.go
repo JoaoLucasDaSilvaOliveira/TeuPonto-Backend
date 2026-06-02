@@ -1,9 +1,14 @@
 package model
 
-import "time"
+import (
+	"fmt"
+	"time"
+
+	sistem_errors "teuponto.com.br/backend/identity_service/internal/domain/error"
+)
 
 //Um objeto auditavel presenta as informações de criação e manipulação das entidades
-// 
+//
 //Estrutura basilar do sistema: serve de base para quase todas as entidades do sistema
 type Auditable struct {
 	createdAt *time.Time
@@ -36,7 +41,7 @@ func NewAuditable() (*Auditable, error) {
 	location, err := time.LoadLocation("America/Sao_Paulo")
 
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("%w: %w", sistem_errors.ErrLoadLocation, err)
 	}
 
 	now := time.Now().In(location)
