@@ -1,7 +1,7 @@
 package model
 
 import (
-	sistemError "teuponto.com.br/backend/identity_service/internal/domain/error"
+	"teuponto.com.br/backend/identity_service/internal/domain/exceptions"
 	"fmt"
 )
 
@@ -166,7 +166,7 @@ type RoleDefinition struct {
 func NewRoleDefinition(role Role, selectedPermissions ...Permission) (RoleDefinition, error) {
 	allowedPermissions, exists := allowedPermissionsByRole[role]
 	if !exists {
-		return RoleDefinition{}, fmt.Errorf("%w: %s", sistemError.ErrInvalidRole, role)
+		return RoleDefinition{}, fmt.Errorf("%w: %s", exceptions.ErrInvalidRole, role)
 	}
 
 	permissions := NewPermissionSet()
@@ -175,7 +175,7 @@ func NewRoleDefinition(role Role, selectedPermissions ...Permission) (RoleDefini
 		if !allowedPermissions.Has(permission) {
 			return RoleDefinition{}, fmt.Errorf(
 				"%w: %s",
-				sistemError.ErrPermissionNotAllowed,
+				exceptions.ErrPermissionNotAllowed,
 				role,
 			)
 		}

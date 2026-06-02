@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"time"
 
-	sistem_errors "teuponto.com.br/backend/identity_service/internal/domain/error"
+	"teuponto.com.br/backend/identity_service/internal/domain/exceptions"
 )
 
 //Um objeto auditavel presenta as informações de criação e manipulação das entidades
@@ -41,7 +41,7 @@ func NewAuditable() (*Auditable, error) {
 	location, err := time.LoadLocation("America/Sao_Paulo")
 
 	if err != nil {
-		return nil, fmt.Errorf("%w: %w", sistem_errors.ErrLoadLocation, err)
+		return nil, fmt.Errorf("%w: %w", exceptions.ErrLoadLocation, err)
 	}
 
 	now := time.Now().In(location)
