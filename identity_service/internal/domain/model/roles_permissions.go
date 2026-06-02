@@ -48,7 +48,7 @@ const (
 )
 
 //descricao das permissoes
-var permissionDescriptions = map[Permission]string{
+var PermissionDescriptions = map[Permission]string{
 	AJUSTAR_PONTO_SOLICITADO:   "Permissão para ajustar ponto solicitado",
 	AJUSTAR_PONTO_MANUAL:       "Permissão para ajuste manual de ponto",
 	CRUD_LANCAMENTOS_EMPREGADOS: "Permissão para criar, atualizar ou remover lançamentos de empregados",
