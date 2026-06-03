@@ -71,7 +71,7 @@ func (c *Company) GetRazaoSocial() string {
 func (c *Company) SetRazaoSocial(razaoSocial string) error {
 	trimmed := strings.TrimSpace(razaoSocial)
 	if trimmed == "" {
-		return fmt.Errorf("%w: razao social vazia", exceptions.ErrEmptyName)
+		return fmt.Errorf("%w: razao social vazia", exceptions.ErrEmptyString)
 	}
 
 	c.razaoSocial = trimmed
@@ -181,7 +181,7 @@ func NewCompany(
 
 	trimmedRazaoSocial := strings.TrimSpace(razaoSocial)
 	if trimmedRazaoSocial == "" {
-		return nil, fmt.Errorf("%w: razao social vazia", exceptions.ErrEmptyName)
+		return nil, fmt.Errorf("%w: razao social vazia", exceptions.ErrEmptyString)
 	}
 
 	return &Company{

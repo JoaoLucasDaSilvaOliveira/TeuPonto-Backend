@@ -4,5 +4,5 @@ import "errors"
 
 var (
 	ErrLoadLocation = errors.New("erro ao obter a localização do sistema")
-	ErrEmptyName = errors.New("nome recebido está em branco, forneça um nome")
+	ErrEmptyString = errors.New("dado recebido está em branco")
 )
