@@ -7,22 +7,28 @@ import (
 	"github.com/google/uuid"
 	"github.com/paemuri/brdoc"
 	"teuponto.com.br/backend/identity_service/internal/domain/exceptions"
+	"teuponto.com.br/backend/identity_service/internal/domain/model"
 	"teuponto.com.br/backend/identity_service/internal/domain/valueobject"
 )
 
 type Address struct {
-	id           uuid.UUID
-	cep          valueobject.CEP
-	street       string
-	number       int
-	neighborhood string
-	longitude    float64
-	latitude     float64
-	codIbge      int
+	*model.Auditable //embedded
+	id               uuid.UUID
+	cep              valueobject.CEP
+	street           string
+	number           int
+	neighborhood     string
+	longitude        float64
+	latitude         float64
+	codIbge          int
 }
 
 func (a *Address) GetID() uuid.UUID {
 	return a.id
+}
+
+func (a *Address) GetAuditable() *model.Auditable {
+	return a.Auditable
 }
 
 func (a *Address) GetCEP() valueobject.CEP {
@@ -109,6 +115,11 @@ func NewAddress(
 	latitude float64,
 	codIbge int,
 ) (*Address, error) {
+	auditable, err := model.NewAuditable()
+	if err != nil {
+		return nil, err
+	}
+
 	cep, err := valueobject.NewCEP(rawCEP, federativeUnit)
 	if err != nil {
 		return nil, err
@@ -125,6 +136,7 @@ func NewAddress(
 	}
 
 	return &Address{
+		Auditable:    auditable,
 		id:           uuid.New(),
 		cep:          cep,
 		street:       trimmedStreet,

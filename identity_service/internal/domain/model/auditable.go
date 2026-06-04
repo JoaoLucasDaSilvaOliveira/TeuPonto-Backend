@@ -16,24 +16,41 @@ type Auditable struct {
 	deletedAt *time.Time //soft delete
 }
 
-func (a *Auditable) getCreatedAt() *time.Time{
+func (a *Auditable) GetCreatedAt() *time.Time{
 	return a.createdAt
 }
 
-func (a *Auditable) getUpdatedAt() *time.Time{
+func (a *Auditable) GetUpdatedAt() *time.Time{
 	return a.updatedAt
 }
 
-func (a *Auditable) getDeletedAt() *time.Time{
+func (a *Auditable) GetDeletedAt() *time.Time{
 	return a.deletedAt
 }
 
-func (a *Auditable) setUpdatedAt(updatedAt *time.Time){
-	a.updatedAt = updatedAt
+func (a *Auditable) SetUpdatedAt(updatedAt *time.Time) error {
+	location, err := time.LoadLocation("America/Sao_Paulo")
+
+	if err != nil {
+		return fmt.Errorf("%w: %w", exceptions.ErrLoadLocation, err)
+	}
+
+	updatedAtWithLocation := updatedAt.In(location)
+	
+	a.updatedAt = &updatedAtWithLocation
+	return nil
 }
 
-func (a *Auditable) setDeletedAt(deletedAt *time.Time){
-	a.deletedAt = deletedAt
+func (a *Auditable) SetDeletedAt(deletedAt *time.Time) error {
+	location, err := time.LoadLocation("America/Sao_Paulo")
+
+	if err != nil {
+		return fmt.Errorf("%w: %w", exceptions.ErrLoadLocation, err)
+	}
+
+	deletedAtWithLocation := deletedAt.In(location)
+	a.deletedAt = &deletedAtWithLocation
+	return nil
 }
 
 func NewAuditable() (*Auditable, error) {

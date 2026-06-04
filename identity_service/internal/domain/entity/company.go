@@ -3,6 +3,7 @@ package entity
 import (
 	"fmt"
 	"strings"
+	"time"
 
 	"github.com/google/uuid"
 	"teuponto.com.br/backend/identity_service/internal/domain/exceptions"
@@ -11,7 +12,7 @@ import (
 )
 
 type Company struct {
-	auditable               *model.Auditable //embedded
+	*model.Auditable //embedded
 	id                      uuid.UUID
 	idEndereco              uuid.UUID
 	idPagamento             uuid.UUID
@@ -26,10 +27,6 @@ type Company struct {
 	rolesTerceirizado       model.RoleDefinition
 }
 
-func (c *Company) GetAuditable() *model.Auditable {
-	return c.auditable
-}
-
 func (c *Company) GetID() uuid.UUID {
 	return c.id
 }
@@ -39,6 +36,10 @@ func (c *Company) GetIDEndereco() uuid.UUID {
 }
 
 func (c *Company) SetIDEndereco(idEndereco uuid.UUID) {
+	//altera o updated_at para auditoria
+	now := time.Now()
+	c.SetUpdatedAt(&now)
+
 	c.idEndereco = idEndereco
 }
 
@@ -47,6 +48,10 @@ func (c *Company) GetIDPagamento() uuid.UUID {
 }
 
 func (c *Company) SetIDPagamento(idPagamento uuid.UUID) {
+	//altera o updated_at para auditoria
+	now := time.Now()
+	c.SetUpdatedAt(&now)
+
 	c.idPagamento = idPagamento
 }
 
@@ -61,6 +66,11 @@ func (c *Company) SetCNPJ(rawCNPJ string) error {
 	}
 
 	c.cnpj = cnpj
+	
+	//altera o updated_at para auditoria
+	now := time.Now()
+	c.SetUpdatedAt(&now)
+
 	return nil
 }
 
@@ -75,6 +85,11 @@ func (c *Company) SetRazaoSocial(razaoSocial string) error {
 	}
 
 	c.razaoSocial = trimmed
+	
+	//altera o updated_at para auditoria
+	now := time.Now()
+	c.SetUpdatedAt(&now)
+
 	return nil
 }
 
@@ -83,6 +98,10 @@ func (c *Company) GetNomeFantasia() string {
 }
 
 func (c *Company) SetNomeFantasia(nomeFantasia string) {
+	//altera o updated_at para auditoria
+	now := time.Now()
+	c.SetUpdatedAt(&now)
+
 	c.nomeFantasia = strings.TrimSpace(nomeFantasia)
 }
 
@@ -91,6 +110,10 @@ func (c *Company) GetPoliticaGeofence() valueobject.PoliticaGeofence {
 }
 
 func (c *Company) SetPoliticaGeofence(politicaGeofence valueobject.PoliticaGeofence) {
+	//altera o updated_at para auditoria
+	now := time.Now()
+	c.SetUpdatedAt(&now)
+
 	c.politicaGeofence = politicaGeofence
 }
 
@@ -105,6 +128,11 @@ func (c *Company) SetEmail(rawEmail string) error {
 	}
 
 	c.email = email
+
+	//altera o updated_at para auditoria
+	now := time.Now()
+	c.SetUpdatedAt(&now)
+
 	return nil
 }
 
@@ -113,6 +141,10 @@ func (c *Company) GetSenhaAcesso() string {
 }
 
 func (c *Company) SetSenhaAcesso(senhaAcesso string) {
+	//altera o updated_at para auditoria
+	now := time.Now()
+	c.SetUpdatedAt(&now)
+
 	c.senhaAcesso = senhaAcesso
 }
 
@@ -127,6 +159,11 @@ func (c *Company) SetCNPJTerceirizado(rawCNPJ string) error {
 	}
 
 	c.cnpjTerceirizado = cnpj
+
+	//altera o updated_at para auditoria
+	now := time.Now()
+	c.SetUpdatedAt(&now)
+
 	return nil
 }
 
@@ -135,6 +172,10 @@ func (c *Company) GetSenhaAcessoTerceirizado() string {
 }
 
 func (c *Company) SetSenhaAcessoTerceirizado(senhaAcessoTerceirizado string) {
+	//altera o updated_at para auditoria
+	now := time.Now()
+	c.SetUpdatedAt(&now)
+
 	c.senhaAcessoTerceirizado = senhaAcessoTerceirizado
 }
 
@@ -143,6 +184,10 @@ func (c *Company) GetRolesTerceirizado() model.RoleDefinition {
 }
 
 func (c *Company) SetRolesTerceirizado(rolesTerceirizado model.RoleDefinition) {
+	//altera o updated_at para auditoria
+	now := time.Now()
+	c.SetUpdatedAt(&now)
+
 	c.rolesTerceirizado = rolesTerceirizado
 }
 
@@ -185,7 +230,7 @@ func NewCompany(
 	}
 
 	return &Company{
-		auditable:               auditable,
+		Auditable:               auditable,
 		id:                      uuid.New(),
 		idEndereco:              idEndereco,
 		idPagamento:             idPagamento,
