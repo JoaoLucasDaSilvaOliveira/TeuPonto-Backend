@@ -16,7 +16,7 @@ type Outsourced struct {
 
 func (o *Outsourced) GetID() uuid.UUID {
 	return o.User.GetUserID()
-}
+}	
 
 func (o *Outsourced) GetCNPJ() valueobject.CNPJ {
 	return o.cnpj
