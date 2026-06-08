@@ -75,5 +75,3 @@ func NewCollaborator(person *Person, idEmpresa uuid.UUID, password string, linkA
 		link_acesso: trimmedLinkAcesso,
 	}, nil
 }
-
-

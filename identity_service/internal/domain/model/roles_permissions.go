@@ -10,7 +10,7 @@ type Permission string
 
 // roles do sistema
 const (
-	COMPANY_ROLE    Role = "COMPANY"
+	MANAGER_ROLE    Role = "MANAGER"
 	SUPERVISOR_ROLE Role = "SUPERVISOR"
 	WORKER_ROLE     Role = "WORKER"
 )
@@ -115,7 +115,7 @@ func (ps PermissionSet) Clone() PermissionSet {
 
 //relacionamento entre role -> permission
 var allowedPermissionsByRole = map[Role]PermissionSet{
-	COMPANY_ROLE: NewPermissionSet(
+	MANAGER_ROLE: NewPermissionSet(
 		AJUSTAR_PONTO_SOLICITADO,
 		AJUSTAR_PONTO_MANUAL,
 		CRUD_LANCAMENTOS_EMPREGADOS,
@@ -191,8 +191,8 @@ func NewRoleDefinition(role Role, selectedPermissions ...Permission) (*RoleDefin
 
 func NewCompanyDefaultRoleDefinition() *RoleDefinition {	
 	return &RoleDefinition{
-		role: COMPANY_ROLE,
-		permissions: allowedPermissionsByRole[COMPANY_ROLE],
+		role: MANAGER_ROLE,
+		permissions: allowedPermissionsByRole[MANAGER_ROLE],
 	}
 }
 
