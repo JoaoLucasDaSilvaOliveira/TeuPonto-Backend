@@ -79,17 +79,6 @@ var PermissionDescriptions = map[Permission]string{
 //conjunto de permissoes
 type PermissionSet map[Permission]struct{}
 
-//factory
-func NewPermissionSet(permissions ...Permission) PermissionSet {
-	set := make(PermissionSet)
-
-	for _, permission := range permissions {
-		set[permission] = struct{}{}
-	}
-
-	return set
-}
-
 func (ps PermissionSet) Has(permission Permission) bool {
 	_, exists := ps[permission]
 	return exists
@@ -111,6 +100,27 @@ func (ps PermissionSet) Clone() PermissionSet {
 	}
 
 	return clone
+}
+
+func (ps PermissionSet) GetPermissions() []Permission {
+	permissions := make([]Permission, 0)
+
+	for permission := range ps {
+		permissions = append(permissions, permission)
+	}
+	
+	return permissions
+}
+
+//factory
+func NewPermissionSet(permissions ...Permission) PermissionSet {
+	set := make(PermissionSet)
+
+	for _, permission := range permissions {
+		set[permission] = struct{}{}
+	}
+
+	return set
 }
 
 //relacionamento entre role -> permission
@@ -160,6 +170,14 @@ var allowedPermissionsByRole = map[Role]PermissionSet{
 type RoleDefinition struct {
 	role        Role
 	permissions PermissionSet
+}
+
+func (rd *RoleDefinition) GetRole() Role {
+	return rd.role
+}
+
+func (rd *RoleDefinition) GetPermissionSet() PermissionSet {
+	return rd.permissions
 }
 
 //factories

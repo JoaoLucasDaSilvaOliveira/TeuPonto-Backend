@@ -1,29 +1,32 @@
 package model
 
-import "github.com/google/uuid"
+import (
+	"time"
+
+	"github.com/google/uuid"
+)
 
 type User struct {
-	*Auditable //embedded
-	userID uuid.UUID
-	roleDefinition *RoleDefinition 
+	*Auditable     //embedded
+	userID         uuid.UUID
+	roleDefinition *RoleDefinition
 }
 
-func (u *User) GetUserID() uuid.UUID{
-	return u.userID	
+func (u *User) GetUserID() uuid.UUID {
+	return u.userID
 }
 
-func (u *User) GetRole() Role{
-	return u.roleDefinition.role
+func (u *User) GetRoleDefinition() *RoleDefinition {
+	return u.roleDefinition
 }
 
-func (u *User) GetPermissions() []Permission {
-	permissionSlice := make([]Permission, 0)
-
-	for key, _ := range u.roleDefinition.permissions {
-		permissionSlice = append(permissionSlice, key)
+func (u *User) SetRoleDefinition(roleDef *RoleDefinition, setUpdatedAt bool) {
+	if setUpdatedAt {
+		now := time.Now()
+		u.SetUpdatedAt(&now)
 	}
-
-	return permissionSlice
+	
+	u.roleDefinition = roleDef
 }
 
 func NewUser(roleDef *RoleDefinition) (*User, error) {
@@ -32,14 +35,16 @@ func NewUser(roleDef *RoleDefinition) (*User, error) {
 	if err != nil {
 		return nil, err
 	}
-	
-	return &User{
-		userID: uuid.New(),
-		roleDefinition: roleDef,
-		Auditable: auditable,
-	}, nil
-}
 
+	user := new(User)
+	user.Auditable = auditable
+	user.userID = uuid.New()
+	user.SetRoleDefinition(roleDef, false)
+	
+
+	return user, nil
+}
+	
 func NewDefaultCompanyUser() (*User, error) {
 	newUser, err := NewUser(NewCompanyDefaultRoleDefinition())
 
@@ -69,4 +74,3 @@ func NewDefaultWorkerUser() (*User, error) {
 
 	return newUser, nil
 }
-
