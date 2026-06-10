@@ -1,8 +1,6 @@
 package entity
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 	"teuponto.com.br/backend/identity_service/internal/domain/model"
 )
@@ -17,9 +15,6 @@ func (s *Supervisor) GetIDGestor() uuid.UUID {
 }
 
 func (s *Supervisor) SetIDGestor(idGestor uuid.UUID) {
-	now := time.Now()
-	s.SetUpdatedAt(&now)
-
 	s.idGestor = idGestor
 }
 

@@ -3,7 +3,6 @@ package entity
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/google/uuid"
 	"teuponto.com.br/backend/identity_service/internal/domain/exceptions"
@@ -12,19 +11,19 @@ import (
 )
 
 type Company struct {
-	*model.Auditable //embedded
-	id                      uuid.UUID
-	idEndereco              uuid.UUID
-	idPagamento             uuid.UUID
-	cnpj                    valueobject.CNPJ
-	razaoSocial             string
-	nomeFantasia            string
-	politicaGeofence        valueobject.PoliticaGeofence
-	email                   valueobject.Email
-	senhaAcesso             string
-	cnpjTerceirizado        valueobject.CNPJ
-	senhaAcessoTerceirizado string
-	rolesTerceirizado       model.RoleDefinition
+	id                       uuid.UUID
+	idEndereco               uuid.UUID
+	idPagamento              uuid.UUID
+	cnpj                     valueobject.CNPJ
+	razaoSocial              string
+	nomeFantasia             string
+	politicaGeofence         valueobject.PoliticaGeofence
+	email                    valueobject.Email
+	senhaAcesso              string
+	defaultCalculationPolicy model.CalculationPolicy
+	cnpjTerceirizado         valueobject.CNPJ
+	senhaAcessoTerceirizado  string
+	rolesTerceirizado        model.RoleDefinition
 }
 
 func (c *Company) GetID() uuid.UUID {
@@ -36,10 +35,6 @@ func (c *Company) GetIDEndereco() uuid.UUID {
 }
 
 func (c *Company) SetIDEndereco(idEndereco uuid.UUID) {
-	//altera o updated_at para auditoria
-	now := time.Now()
-	c.SetUpdatedAt(&now)
-
 	c.idEndereco = idEndereco
 }
 
@@ -48,10 +43,6 @@ func (c *Company) GetIDPagamento() uuid.UUID {
 }
 
 func (c *Company) SetIDPagamento(idPagamento uuid.UUID) {
-	//altera o updated_at para auditoria
-	now := time.Now()
-	c.SetUpdatedAt(&now)
-
 	c.idPagamento = idPagamento
 }
 
@@ -66,10 +57,6 @@ func (c *Company) SetCNPJ(rawCNPJ string) error {
 	}
 
 	c.cnpj = cnpj
-	
-	//altera o updated_at para auditoria
-	now := time.Now()
-	c.SetUpdatedAt(&now)
 
 	return nil
 }
@@ -85,10 +72,6 @@ func (c *Company) SetRazaoSocial(razaoSocial string) error {
 	}
 
 	c.razaoSocial = trimmed
-	
-	//altera o updated_at para auditoria
-	now := time.Now()
-	c.SetUpdatedAt(&now)
 
 	return nil
 }
@@ -98,10 +81,6 @@ func (c *Company) GetNomeFantasia() string {
 }
 
 func (c *Company) SetNomeFantasia(nomeFantasia string) {
-	//altera o updated_at para auditoria
-	now := time.Now()
-	c.SetUpdatedAt(&now)
-
 	c.nomeFantasia = strings.TrimSpace(nomeFantasia)
 }
 
@@ -110,10 +89,6 @@ func (c *Company) GetPoliticaGeofence() valueobject.PoliticaGeofence {
 }
 
 func (c *Company) SetPoliticaGeofence(politicaGeofence valueobject.PoliticaGeofence) {
-	//altera o updated_at para auditoria
-	now := time.Now()
-	c.SetUpdatedAt(&now)
-
 	c.politicaGeofence = politicaGeofence
 }
 
@@ -129,10 +104,6 @@ func (c *Company) SetEmail(rawEmail string) error {
 
 	c.email = email
 
-	//altera o updated_at para auditoria
-	now := time.Now()
-	c.SetUpdatedAt(&now)
-
 	return nil
 }
 
@@ -141,11 +112,20 @@ func (c *Company) GetSenhaAcesso() string {
 }
 
 func (c *Company) SetSenhaAcesso(senhaAcesso string) {
-	//altera o updated_at para auditoria
-	now := time.Now()
-	c.SetUpdatedAt(&now)
-
 	c.senhaAcesso = senhaAcesso
+}
+
+func (c *Company) GetDefaultCalculationPolicy() model.CalculationPolicy {
+	return c.defaultCalculationPolicy
+}
+
+func (c *Company) SetDefaultCalculationPolicy(calculationPolicy model.CalculationPolicy) error {
+	if calculationPolicy == nil {
+		return exceptions.ErrEmptyCalculationPolicy
+	}
+
+	c.defaultCalculationPolicy = calculationPolicy
+	return nil
 }
 
 func (c *Company) GetCNPJTerceirizado() valueobject.CNPJ {
@@ -160,10 +140,6 @@ func (c *Company) SetCNPJTerceirizado(rawCNPJ string) error {
 
 	c.cnpjTerceirizado = cnpj
 
-	//altera o updated_at para auditoria
-	now := time.Now()
-	c.SetUpdatedAt(&now)
-
 	return nil
 }
 
@@ -172,10 +148,6 @@ func (c *Company) GetSenhaAcessoTerceirizado() string {
 }
 
 func (c *Company) SetSenhaAcessoTerceirizado(senhaAcessoTerceirizado string) {
-	//altera o updated_at para auditoria
-	now := time.Now()
-	c.SetUpdatedAt(&now)
-
 	c.senhaAcessoTerceirizado = senhaAcessoTerceirizado
 }
 
@@ -184,10 +156,6 @@ func (c *Company) GetRolesTerceirizado() model.RoleDefinition {
 }
 
 func (c *Company) SetRolesTerceirizado(rolesTerceirizado model.RoleDefinition) {
-	//altera o updated_at para auditoria
-	now := time.Now()
-	c.SetUpdatedAt(&now)
-
 	c.rolesTerceirizado = rolesTerceirizado
 }
 
@@ -203,10 +171,10 @@ func NewCompany(
 	rawCNPJTerceirizado string,
 	senhaAcessoTerceirizado string,
 	rolesTerceirizado model.RoleDefinition,
+	calculationPolicy model.CalculationPolicy,
 ) (*Company, error) {
-	auditable, err := model.NewAuditable()
-	if err != nil {
-		return nil, err
+	if calculationPolicy == nil {
+		return nil, exceptions.ErrEmptyCalculationPolicy
 	}
 
 	cnpj, err := valueobject.NewCNPJ(rawCNPJ)
@@ -230,18 +198,18 @@ func NewCompany(
 	}
 
 	return &Company{
-		Auditable:               auditable,
-		id:                      uuid.New(),
-		idEndereco:              idEndereco,
-		idPagamento:             idPagamento,
-		cnpj:                    cnpj,
-		razaoSocial:             trimmedRazaoSocial,
-		nomeFantasia:            strings.TrimSpace(nomeFantasia),
-		politicaGeofence:        politicaGeofence,
-		email:                   email,
-		senhaAcesso:             senhaAcesso,
-		cnpjTerceirizado:        cnpjTerceirizado,
-		senhaAcessoTerceirizado: senhaAcessoTerceirizado,
-		rolesTerceirizado:       rolesTerceirizado,
+		id:                       uuid.New(),
+		idEndereco:               idEndereco,
+		idPagamento:              idPagamento,
+		cnpj:                     cnpj,
+		razaoSocial:              trimmedRazaoSocial,
+		nomeFantasia:             strings.TrimSpace(nomeFantasia),
+		politicaGeofence:         politicaGeofence,
+		email:                    email,
+		senhaAcesso:              senhaAcesso,
+		cnpjTerceirizado:         cnpjTerceirizado,
+		senhaAcessoTerceirizado:  senhaAcessoTerceirizado,
+		rolesTerceirizado:        rolesTerceirizado,
+		defaultCalculationPolicy: calculationPolicy,
 	}, nil
 }

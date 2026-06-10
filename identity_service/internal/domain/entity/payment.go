@@ -6,11 +6,9 @@ import (
 
 	"github.com/google/uuid"
 	"teuponto.com.br/backend/identity_service/internal/domain/exceptions"
-	"teuponto.com.br/backend/identity_service/internal/domain/model"
 )
 
 type Payment struct {
-	*model.Auditable
 	id              uuid.UUID
 	idPlan          uuid.UUID
 	startContract   *time.Time
@@ -21,19 +19,11 @@ func (p *Payment) GetID() uuid.UUID {
 	return p.id
 }
 
-func (p *Payment) GetAuditable() *model.Auditable {
-	return p.Auditable
-}
-
 func (p *Payment) GetIDPlan() uuid.UUID {
 	return p.idPlan
 }
 
 func (p *Payment) SetIDPlan(idPlan uuid.UUID) {
-	//altera o updated_at para auditoria
-	now := time.Now()
-	p.SetUpdatedAt(&now)
-	
 	p.idPlan = idPlan
 }
 
@@ -47,10 +37,6 @@ func (p *Payment) SetStartContract(startContract *time.Time) error {
 	}
 
 	p.startContract = startContract
-
-	//altera o updated_at para auditoria
-	now := time.Now()
-	p.SetUpdatedAt(&now)
 	
 	return nil
 }
@@ -66,19 +52,10 @@ func (p *Payment) SetDateLastPayment(dateLastPayment *time.Time) error {
 
 	p.dateLastPayment = dateLastPayment
 
-	//altera o updated_at para auditoria
-	now := time.Now()
-	p.SetUpdatedAt(&now)
-	
 	return nil
 }
 
 func NewPayment(idPlan uuid.UUID, startContract *time.Time, dateLastPayment *time.Time) (*Payment, error) {
-	auditable, err := model.NewAuditable()
-	if err != nil {
-		return nil, err
-	}
-
 	if startContract == nil {
 		return nil, fmt.Errorf("%w: startContract nulo", exceptions.ErrEmptyString)
 	}
@@ -88,7 +65,6 @@ func NewPayment(idPlan uuid.UUID, startContract *time.Time, dateLastPayment *tim
 	}
 
 	return &Payment{
-		Auditable:       auditable,
 		id:              uuid.New(),
 		idPlan:          idPlan,
 		startContract:   startContract,

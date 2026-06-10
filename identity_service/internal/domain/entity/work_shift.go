@@ -3,11 +3,9 @@ package entity
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/google/uuid"
 	"teuponto.com.br/backend/identity_service/internal/domain/exceptions"
-	"teuponto.com.br/backend/identity_service/internal/domain/model"
 )
 
 type ShiftType string
@@ -21,7 +19,6 @@ const (
 )
 
 type WorkShift struct {
-	*model.Auditable
 	id          uuid.UUID
 	name        string
 	description string
@@ -44,10 +41,7 @@ func (w *WorkShift) SetName(name string) error {
 	}
 
 	w.name = trimmedName
-
-	now := time.Now()
-	w.SetUpdatedAt(&now)
-
+	
 	return nil
 }
 
@@ -57,9 +51,6 @@ func (w *WorkShift) GetDescription() string {
 
 func (w *WorkShift) SetDescription(description string) {
 	w.description = strings.TrimSpace(description)
-
-	now := time.Now()
-	w.SetUpdatedAt(&now)
 }
 
 func (w *WorkShift) GetShiftType() ShiftType {
@@ -68,9 +59,6 @@ func (w *WorkShift) GetShiftType() ShiftType {
 
 func (w *WorkShift) SetShiftType(shiftType ShiftType) {
 	w.shiftType = shiftType
-
-	now := time.Now()
-	w.SetUpdatedAt(&now)
 }
 
 func (w *WorkShift) GetWorkHours() *WorkHours {
@@ -79,13 +67,9 @@ func (w *WorkShift) GetWorkHours() *WorkHours {
 
 func (w *WorkShift) SetWorkHours(workHours *WorkHours) {
 	w.workHours = workHours
-
-	now := time.Now()
-	w.SetUpdatedAt(&now)
 }
 
 func NewWorkShift(
-	auditable *model.Auditable,
 	name string,
 	description string,
 	shiftType ShiftType,
@@ -97,7 +81,6 @@ func NewWorkShift(
 	}
 
 	return &WorkShift{
-		Auditable:   auditable,
 		id:          uuid.New(),
 		name:        trimmedName,
 		description: strings.TrimSpace(description),

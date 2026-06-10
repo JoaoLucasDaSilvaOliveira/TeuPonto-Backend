@@ -8,7 +8,6 @@ import (
 	"cloud.google.com/go/civil"
 	"github.com/google/uuid"
 	"teuponto.com.br/backend/identity_service/internal/domain/exceptions"
-	"teuponto.com.br/backend/identity_service/internal/domain/model"
 )
 
 type shift struct {
@@ -61,7 +60,6 @@ func NewShift (entryTime civil.Time, exitTime civil.Time) (*shift, error) {
 //--------------------------------------------
 
 type WorkHours struct {
-	*model.Auditable
 	id          uuid.UUID
 	name        string
 	description string
@@ -85,9 +83,6 @@ func (w *WorkHours) SetName(name string) error {
 
 	w.name = trimmedName
 
-	now := time.Now()
-	w.SetUpdatedAt(&now)
-	
 	return nil
 }
 
@@ -96,9 +91,6 @@ func (w *WorkHours) GetDescription() string {
 }
 
 func (w *WorkHours) SetDescription(description string) {
-	now := time.Now()
-	w.SetUpdatedAt(&now)
-	
 	w.description = strings.TrimSpace(description)
 }
 
@@ -109,15 +101,11 @@ func (w *WorkHours) GetWorkShift() []*shift {
 func (w *WorkHours) SetWorkShift(workShift []*shift) {
 	w.workShift = workShift
 	w.workload = calculateWorkload(w.workShift)
-	now := time.Now()
-	w.SetUpdatedAt(&now)
 }
 
 func (w *WorkHours) AddShift(newShift *shift) {
 	w.workShift = append(w.workShift, newShift)
 	w.workload = calculateWorkload(w.workShift)
-	now := time.Now()
-	w.SetUpdatedAt(&now)
 }
 
 func (w *WorkHours) GetWorkload() time.Duration {
@@ -149,14 +137,13 @@ func shiftDuration(workShift *shift) time.Duration {
 	return exit.Sub(entry)
 }
 
-func NewWorkHours(auditable *model.Auditable, name string, description string, workShift []*shift) (*WorkHours, error) {
+func NewWorkHours(name string, description string, workShift []*shift) (*WorkHours, error) {
 	trimmedName := strings.TrimSpace(name)
 	if trimmedName == "" {
 		return nil, fmt.Errorf("%w: forneça um nome", exceptions.ErrEmptyString)
 	}
 
 	return &WorkHours{
-		Auditable:   auditable,
 		id:          uuid.New(),
 		name:        trimmedName,
 		description: strings.TrimSpace(description),

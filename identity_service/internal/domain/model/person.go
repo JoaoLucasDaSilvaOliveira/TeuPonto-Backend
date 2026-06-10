@@ -3,7 +3,6 @@ package model
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"teuponto.com.br/backend/identity_service/internal/domain/exceptions"
 	"teuponto.com.br/backend/identity_service/internal/domain/valueobject"
@@ -29,10 +28,6 @@ func (p *Person) SetName(name string) error {
 	
 	p.name = trimmedName
 
-	//altera o updated_at para auditoria
-	now := time.Now()
-	p.SetUpdatedAt(&now)
-
 	return nil
 }
 
@@ -48,10 +43,6 @@ func (p *Person) SetCPF(rawCpf string) error {
 
 	p.cpf = cpf
 
-	//altera o updated_at para auditoria
-	now := time.Now()
-	p.SetUpdatedAt(&now)
-	
 	return nil
 }
 
@@ -66,38 +57,26 @@ func (p *Person) SetEmail(rawEmail string) error {
 	}
 
 	p.email = email
-
-	//altera o updated_at para auditoria
-	now := time.Now()
-	p.SetUpdatedAt(&now)
 	
 	return nil
 }
 
 func NewPerson(user *User, name string, rawCpf string, rawEmail string) (*Person, error) {
-	trimmedName := strings.TrimSpace(name)
-
-	if trimmedName == "" {
-		return nil, fmt.Errorf("%w: forneça um nome", exceptions.ErrEmptyString)
-
-	}
-
-	cpf, err := valueobject.NewCPF(rawCpf)
-
-	if err != nil {
+	person := new(Person)
+	
+	if err := person.SetCPF(rawCpf); err != nil {
 		return nil, err
 	}
-
-	email, err := valueobject.NewEmail(rawEmail)
-
-	if err != nil {
+	
+	if err := person.SetEmail(rawEmail); err != nil {
 		return nil, err
 	}
+	
+	if err := person.SetName(name); err != nil {
+		return nil, err
+	}
+	
+	person.User = user
 
-	return &Person{
-		name:  trimmedName,
-		cpf:   cpf,
-		email: email,
-		User:  user,
-	}, nil
+	return person, nil
 }

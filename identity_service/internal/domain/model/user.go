@@ -1,13 +1,10 @@
 package model
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 )
 
 type User struct {
-	*Auditable     //embedded
 	userID         uuid.UUID
 	roleDefinition *RoleDefinition
 }
@@ -20,26 +17,15 @@ func (u *User) GetRoleDefinition() *RoleDefinition {
 	return u.roleDefinition
 }
 
-func (u *User) SetRoleDefinition(roleDef *RoleDefinition, setUpdatedAt bool) {
-	if setUpdatedAt {
-		now := time.Now()
-		u.SetUpdatedAt(&now)
-	}
-	
+func (u *User) SetRoleDefinition(roleDef *RoleDefinition) {
 	u.roleDefinition = roleDef
 }
 
 func NewUser(roleDef *RoleDefinition) (*User, error) {
-	auditable, err := NewAuditable()
-
-	if err != nil {
-		return nil, err
-	}
 
 	user := new(User)
-	user.Auditable = auditable
 	user.userID = uuid.New()
-	user.SetRoleDefinition(roleDef, false)
+	user.SetRoleDefinition(roleDef)
 	
 
 	return user, nil

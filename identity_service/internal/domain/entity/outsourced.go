@@ -1,8 +1,6 @@
 package entity
 
 import (
-	"time"
-
 	"github.com/google/uuid"
 	"teuponto.com.br/backend/identity_service/internal/domain/model"
 	"teuponto.com.br/backend/identity_service/internal/domain/valueobject"
@@ -30,9 +28,6 @@ func (o *Outsourced) SetCNPJ(rawCNPJ string) error {
 
 	o.cnpj = cnpj
 
-	now := time.Now()
-	o.SetUpdatedAt(&now)
-
 	return nil
 }
 
@@ -41,9 +36,6 @@ func (o *Outsourced) GetAccessPassword() string {
 }
 
 func (o *Outsourced) SetAccessPassword(accessPassword string) {
-	now := time.Now()
-	o.SetUpdatedAt(&now)
-
 	o.accessPassword = accessPassword
 }
 
