@@ -75,16 +75,16 @@ func NewWorkShift(
 	shiftType ShiftType,
 	workHours *WorkHours,
 ) (*WorkShift, error) {
-	trimmedName := strings.TrimSpace(name)
-	if trimmedName == "" {
-		return nil, fmt.Errorf("%w: forneça um nome", exceptions.ErrEmptyString)
+	workShift := new(WorkShift)
+
+	workShift.id = uuid.New()
+	workShift.SetDescription(description)
+	workShift.SetShiftType(shiftType)
+	workShift.SetWorkHours(workHours)	
+	
+	if err := workShift.SetName(name); err != nil {
+		return nil, err
 	}
 
-	return &WorkShift{
-		id:          uuid.New(),
-		name:        trimmedName,
-		description: strings.TrimSpace(description),
-		shiftType:   shiftType,
-		workHours:   workHours,
-	}, nil
+	return workShift, nil
 }

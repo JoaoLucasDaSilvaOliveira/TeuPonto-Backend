@@ -15,11 +15,11 @@ type shift struct {
 	exitTime  civil.Time // não pode ser maior que a entrada
 }
 
-func (s *shift) GetEntryTime() civil.Time {
+func (s shift) GetEntryTime() civil.Time {
 	return s.entryTime
 }
 
-func (s *shift) SetEntryTime(entryTime civil.Time) error {
+func (s shift) WithEntryTime(entryTime civil.Time) error {
 	//verifica se é depois que a saída
 	if entryTime.After(s.exitTime) || entryTime == s.entryTime {
 		return exceptions.ErrUnprocessableEntryTime
@@ -29,11 +29,11 @@ func (s *shift) SetEntryTime(entryTime civil.Time) error {
 	return nil
 }
 
-func (s *shift) GetExitTime() civil.Time {
+func (s shift) GetExitTime() civil.Time {
 	return s.exitTime
 }
 
-func (s *shift) SetExitTime(exitTime civil.Time) error {
+func (s shift) WithExitTime(exitTime civil.Time) error {
 	//verifica se é antes da entrada
 	if exitTime.Before(s.entryTime) || exitTime == s.exitTime {
 		return exceptions.ErrUnprocessableExitTime
@@ -46,11 +46,11 @@ func (s *shift) SetExitTime(exitTime civil.Time) error {
 func NewShift (entryTime civil.Time, exitTime civil.Time) (*shift, error) {
 	shift := new(shift)
 	
-	if err := shift.SetEntryTime(entryTime); err != nil {
+	if err := shift.WithEntryTime(entryTime); err != nil {
 		return nil, err
 	}
 
-	if err := shift.SetExitTime(exitTime); err != nil {
+	if err := shift.WithExitTime(exitTime); err != nil {
 		return nil, err
 	}
 
@@ -65,7 +65,7 @@ type WorkHours struct {
 	description string
 	workShift   []*shift
 	workload    time.Duration
-}
+}	
 
 func (w *WorkHours) GetID() uuid.UUID {
 	return w.id
@@ -112,6 +112,23 @@ func (w *WorkHours) GetWorkload() time.Duration {
 	return w.workload
 }
 
+func NewWorkHours(name string, description string, workShift []*shift) (*WorkHours, error) {
+	workHours := new(WorkHours)
+
+	workHours.id = uuid.New()
+
+	workHours.SetDescription(description)
+	workHours.SetWorkShift(workShift)
+
+	if err := workHours.SetName(name); err != nil {
+		return nil, err
+	}
+
+	workHours.workload = calculateWorkload(workHours.GetWorkShift())
+
+	return workHours, nil
+}
+
 func calculateWorkload(workShift []*shift) time.Duration {
 	var workload time.Duration
 
@@ -135,19 +152,4 @@ func shiftDuration(workShift *shift) time.Duration {
 	exit := time.Date(2000, time.January, exitDay, workShift.exitTime.Hour, workShift.exitTime.Minute, workShift.exitTime.Second, 0, time.UTC)
 
 	return exit.Sub(entry)
-}
-
-func NewWorkHours(name string, description string, workShift []*shift) (*WorkHours, error) {
-	trimmedName := strings.TrimSpace(name)
-	if trimmedName == "" {
-		return nil, fmt.Errorf("%w: forneça um nome", exceptions.ErrEmptyString)
-	}
-
-	return &WorkHours{
-		id:          uuid.New(),
-		name:        trimmedName,
-		description: strings.TrimSpace(description),
-		workShift:   workShift,
-		workload:    calculateWorkload(workShift),
-	}, nil
 }

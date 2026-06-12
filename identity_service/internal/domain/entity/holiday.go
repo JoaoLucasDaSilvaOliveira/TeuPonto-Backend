@@ -50,14 +50,16 @@ func (h *Holiday) SetDate(date *time.Time) error {
 }
 
 func NewHoliday(optional bool, codIbge int, date *time.Time) (*Holiday, error) {
-	if date == nil {
-		return nil, fmt.Errorf("%w: date nula", exceptions.ErrEmptyString)
+	holiday := new(Holiday)
+
+	holiday.id = uuid.New()
+
+	holiday.SetCodIbge(codIbge)
+	holiday.SetOptional(optional)
+
+	if err := holiday.SetDate(date); err != nil {
+		return nil, err
 	}
 
-	return &Holiday{
-		id:        uuid.New(),
-		optional:  optional,
-		codIbge:   codIbge,
-		date:      date,
-	}, nil
+	return holiday, nil
 }

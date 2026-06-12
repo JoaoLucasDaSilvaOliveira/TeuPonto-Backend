@@ -9,7 +9,6 @@ import (
 type Outsourced struct {
 	*model.User
 	cnpj           valueobject.CNPJ
-	accessPassword string
 }
 
 func (o *Outsourced) GetID() uuid.UUID {
@@ -31,23 +30,14 @@ func (o *Outsourced) SetCNPJ(rawCNPJ string) error {
 	return nil
 }
 
-func (o *Outsourced) GetAccessPassword() string {
-	return o.accessPassword
-}
-
-func (o *Outsourced) SetAccessPassword(accessPassword string) {
-	o.accessPassword = accessPassword
-}
-
 func NewOutsourced(user *model.User, rawCNPJ string, accessPassword string) (*Outsourced, error) {
-	cnpj, err := valueobject.NewCNPJ(rawCNPJ)
-	if err != nil {
+	outsourced := new(Outsourced)
+
+	outsourced.User = user
+
+	if err := outsourced.SetCNPJ(rawCNPJ); err != nil {
 		return nil, err
 	}
 
-	return &Outsourced{
-		User:           user,
-		cnpj:           cnpj,
-		accessPassword: accessPassword,
-	}, nil
+	return outsourced, nil
 }

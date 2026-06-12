@@ -9,6 +9,8 @@ type CalculationMode string
 const (
 	Direct   CalculationMode = "DIRECT"
 	TimeBank CalculationMode = "TIME_BANK"
+	//TODO: criar macros de informações padrão para:
+	// porcentagem padrão horas extras, tolerancia e etc
 )
 
 type TimeBankCalculationPolicy struct {

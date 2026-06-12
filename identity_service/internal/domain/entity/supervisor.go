@@ -7,20 +7,22 @@ import (
 
 type Supervisor struct {
 	*model.Collaborator
-	idGestor uuid.UUID
+	idManager uuid.UUID
 }
 
-func (s *Supervisor) GetIDGestor() uuid.UUID {
-	return s.idGestor
+func (s *Supervisor) GetIDManager() uuid.UUID {
+	return s.idManager
 }
 
-func (s *Supervisor) SetIDGestor(idGestor uuid.UUID) {
-	s.idGestor = idGestor
+func (s *Supervisor) SetIDManager(idGestor uuid.UUID) {
+	s.idManager = idGestor
 }
 
 func NewSupervisor(collaborator *model.Collaborator, idGestor uuid.UUID) (*Supervisor, error) {
-	return &Supervisor{
-		Collaborator: collaborator,
-		idGestor:     idGestor,
-	}, nil
+	supervisor := new(Supervisor)
+
+	supervisor.SetIDManager(idGestor)
+	supervisor.Collaborator = collaborator
+	
+	return supervisor, nil
 }

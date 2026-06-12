@@ -21,6 +21,10 @@ type Address struct {
 	codIbge          int
 }
 
+//TODO:
+// pesquisar e validar o range do cod ibge
+// cod ibge e number não podem ser negativos
+
 func (a *Address) GetID() uuid.UUID {
 	return a.id
 }
@@ -109,29 +113,26 @@ func NewAddress(
 	latitude float64,
 	codIbge int,
 ) (*Address, error) {
-	cep, err := valueobject.NewCEP(rawCEP, federativeUnit)
-	if err != nil {
+	address := new(Address)
+
+	address.id = uuid.New()
+
+	address.SetCodIbge(codIbge)
+	address.SetLatitude(latitude)
+	address.SetLongitude(longitude)
+	address.SetNumber(number)
+	
+	if err := address.SetCEP(rawCEP, federativeUnit); err != nil {
 		return nil, err
 	}
-
-	trimmedStreet := strings.TrimSpace(street)
-	if trimmedStreet == "" {
-		return nil, fmt.Errorf("%w: rua vazia", exceptions.ErrEmptyString)
+	
+	if err := address.SetNeighborhood(neighborhood); err != nil {
+		return nil, err
 	}
-
-	trimmedNeighborhood := strings.TrimSpace(neighborhood)
-	if trimmedNeighborhood == "" {
-		return nil, fmt.Errorf("%w: bairro vazio", exceptions.ErrEmptyString)
+	
+	if err := address.SetStreet(street); err != nil {
+		return nil, err
 	}
-
-	return &Address{
-		id:           uuid.New(),
-		cep:          cep,
-		street:       trimmedStreet,
-		number:       number,
-		neighborhood: trimmedNeighborhood,
-		longitude:    longitude,
-		latitude:     latitude,
-		codIbge:      codIbge,
-	}, nil
+	
+	return address, nil
 }

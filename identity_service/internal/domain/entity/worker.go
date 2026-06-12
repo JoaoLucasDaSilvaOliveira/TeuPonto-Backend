@@ -19,8 +19,10 @@ func (w *Worker) SetIDSupervisor(idSupervisor uuid.UUID) {
 }
 
 func NewWorker(collaborator *model.Collaborator, idSupervisor uuid.UUID) (*Worker, error) {
-	return &Worker{
-		Collaborator: collaborator,
-		idSupervisor: idSupervisor,
-	}, nil
+	worker := new(Worker)
+
+	worker.SetIDSupervisor(idSupervisor)
+	worker.Collaborator = collaborator
+	
+	return worker, nil
 }

@@ -56,18 +56,18 @@ func (p *Payment) SetDateLastPayment(dateLastPayment *time.Time) error {
 }
 
 func NewPayment(idPlan uuid.UUID, startContract *time.Time, dateLastPayment *time.Time) (*Payment, error) {
-	if startContract == nil {
-		return nil, fmt.Errorf("%w: startContract nulo", exceptions.ErrEmptyString)
+	payment := new(Payment)
+
+	payment.id = uuid.New()
+	payment.SetIDPlan(idPlan)
+
+	if err := payment.SetDateLastPayment(dateLastPayment); err != nil {
+		return nil, err
 	}
 
-	if dateLastPayment == nil {
-		return nil, fmt.Errorf("%w: dateLastPayment nulo", exceptions.ErrEmptyString)
-	}
+	if err := payment.SetStartContract(startContract); err != nil {
+		return nil, err
+	}	
 
-	return &Payment{
-		id:              uuid.New(),
-		idPlan:          idPlan,
-		startContract:   startContract,
-		dateLastPayment: dateLastPayment,
-	}, nil
+	return payment, nil
 }
