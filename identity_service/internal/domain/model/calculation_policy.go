@@ -84,25 +84,25 @@ func NewTimeBankCalculationPolicy(
 	dailyToleranceMinutes int,
 	closingCycleExtraPercent int,
 ) (*TimeBankCalculationPolicy, error) {
-	if err := validateNonNegative("ciclo de meses", cycleMonths); err != nil {
+	timeBankCalculationPolicy := new(TimeBankCalculationPolicy)
+	
+	if err := timeBankCalculationPolicy.SetClosingCycleExtraPercent(closingCycleExtraPercent); err != nil {
 		return nil, err
 	}
-	if err := validateNonNegative("tolerâcia em minutos", entryToleranceMinutes); err != nil {
+	
+	if err := timeBankCalculationPolicy.SetCycleMonths(cycleMonths); err != nil {
 		return nil, err
 	}
-	if err := validateNonNegative("tolerância diária em minutos", dailyToleranceMinutes); err != nil {
+	
+	if err := timeBankCalculationPolicy.SetDailyToleranceMinutes(dailyToleranceMinutes); err != nil {
 		return nil, err
 	}
-	if err := validateNonNegative("porcentagem das horas extras", closingCycleExtraPercent); err != nil {
+	
+	if err := timeBankCalculationPolicy.SetEntryToleranceMinutes(entryToleranceMinutes); err != nil {
 		return nil, err
 	}
-
-	return &TimeBankCalculationPolicy{
-		cycleMonths:              cycleMonths,
-		entryToleranceMinutes:    entryToleranceMinutes,
-		dailyToleranceMinutes:    dailyToleranceMinutes,
-		closingCycleExtraPercent: closingCycleExtraPercent,
-	}, nil
+	
+	return timeBankCalculationPolicy, nil
 }
 
 type DirectCalculationPolicy struct {
@@ -208,25 +208,32 @@ func NewDirectCalculationPolicy(
 	sundayExtraPercent int,
 	holidayExtraPercent int,
 ) (*DirectCalculationPolicy, error) {
-	if err := validateNonNegative("tolerâcia em minutos", entryToleranceMinutes); err != nil {
-		return nil, err
-	}
-	if err := validateNonNegative("tolerâcia diária em minutos", dailyToleranceMinutes); err != nil {
-		return nil, err
-	}
-	if err := validateNonNegative("porcentagem das horas extras até as 2 primeiras horas extras", weekdayExtraPercentBeforeFirstTwoHours); err != nil {
-		return nil, err
-	}
-	if err := validateNonNegative("porcentagem das horas extras após as 2 primeiras horas extras", weekdayExtraPercentAfterFirstTwoHours); err != nil {
-		return nil, err
-	}
-	if err := validateNonNegative("porcentagem das horas extras aos domingos", sundayExtraPercent); err != nil {
-		return nil, err
-	}
-	if err := validateNonNegative("porcentagem das horas extras em feriados", holidayExtraPercent); err != nil {
-		return nil, err
-	}
+	d := new(DirectCalculationPolicy)
 
+	if err := d.SetDailyToleranceMinutes(dailyToleranceMinutes); err != nil {
+		return nil, err
+	}
+	
+	if err := d.SetEntryToleranceMinutes(entryToleranceMinutes); err != nil {
+		return nil, err
+	}
+	
+	if err := d.SetHolidayExtraPercent(holidayExtraPercent); err != nil {
+		return nil, err
+	}
+	
+	if err := d.SetSundayExtraPercent(sundayExtraPercent); err != nil {
+		return nil, err
+	}
+	
+	if err := d.SetWeekdayExtraPercentAfterFirstTwoHours(weekdayExtraPercentAfterFirstTwoHours); err != nil {
+		return nil, err
+	}
+	
+	if err := d.SetWeekdayExtraPercentBeforeFirstTwoHours(weekdayExtraPercentBeforeFirstTwoHours); err != nil {
+		return nil, err
+	}
+	
 	return &DirectCalculationPolicy{
 		entryToleranceMinutes:                  entryToleranceMinutes,
 		dailyToleranceMinutes:                  dailyToleranceMinutes,

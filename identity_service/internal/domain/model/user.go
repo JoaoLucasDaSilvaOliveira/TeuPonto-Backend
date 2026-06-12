@@ -21,42 +21,28 @@ func (u *User) SetRoleDefinition(roleDef *RoleDefinition) {
 	u.roleDefinition = roleDef
 }
 
-func NewUser(roleDef *RoleDefinition) (*User, error) {
-
+func NewUser(roleDef *RoleDefinition) *User {
 	user := new(User)
 	user.userID = uuid.New()
 	user.SetRoleDefinition(roleDef)
 	
-
-	return user, nil
+	return user
 }
 	
-func NewDefaultCompanyUser() (*User, error) {
-	newUser, err := NewUser(NewCompanyDefaultRoleDefinition())
+func NewDefaultCompanyUser() *User {
+	newUser := NewUser(NewCompanyDefaultRoleDefinition())
 
-	if err != nil {
-		return nil, err
-	}
-
-	return newUser, nil
+	return newUser
 }
 
-func NewDefaultSupervisorUser() (*User, error) {
-	newUser, err := NewUser(NewSupervisorDefaultRoleDefinition())
+func NewDefaultSupervisorUser() *User {
+	newUser := NewUser(NewSupervisorDefaultRoleDefinition())
 
-	if err != nil {
-		return nil, err
-	}
-
-	return newUser, nil
+	return newUser
 }
 
-func NewDefaultWorkerUser() (*User, error) {
-	newUser, err := NewUser(NewWorkerDefaultRoleDefinition())
+func NewDefaultWorkerUser() *User {
+	newUser := NewUser(NewWorkerDefaultRoleDefinition())
 
-	if err != nil {
-		return nil, err
-	}
-
-	return newUser, nil
+	return newUser
 }

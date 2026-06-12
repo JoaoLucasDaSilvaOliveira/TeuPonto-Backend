@@ -207,7 +207,7 @@ func NewRoleDefinition(role Role, selectedPermissions ...Permission) (*RoleDefin
 	}, nil
 }
 
-func NewCompanyDefaultRoleDefinition() *RoleDefinition {	
+func NewCompanyDefaultRoleDefinition() *RoleDefinition {
 	return &RoleDefinition{
 		role: MANAGER_ROLE,
 		permissions: allowedPermissionsByRole[MANAGER_ROLE],
