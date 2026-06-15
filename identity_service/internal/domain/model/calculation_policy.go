@@ -2,6 +2,8 @@ package model
 
 import (
 	"fmt"
+
+	"teuponto.com.br/backend/identity_service/internal/domain/exceptions"
 )
 
 type CalculationMode string
@@ -259,7 +261,7 @@ func NewDirectCalculationPolicy(
 
 func validateNonNegative(fieldName string, value int) error {
 	if value < 0 {
-		return fmt.Errorf("%s não pode ser negativo", fieldName)
+		return fmt.Errorf("%w: %s não pode ser negativo", exceptions.ErrNegativeNumberNotAlowed, fieldName)
 	}
 
 	return nil

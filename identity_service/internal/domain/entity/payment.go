@@ -33,7 +33,7 @@ func (p *Payment) GetStartContract() *time.Time {
 
 func (p *Payment) SetStartContract(startContract *time.Time) error {
 	if startContract == nil {
-		return fmt.Errorf("%w: startContract nulo", exceptions.ErrEmptyString)
+		return fmt.Errorf("%w: data do início do contrato nula", exceptions.ErrEmptyString)
 	}
 
 	p.startContract = startContract
@@ -47,7 +47,7 @@ func (p *Payment) GetDateLastPayment() *time.Time {
 
 func (p *Payment) SetDateLastPayment(dateLastPayment *time.Time) error {
 	if dateLastPayment == nil {
-		return fmt.Errorf("%w: dateLastPayment nulo", exceptions.ErrEmptyString)
+		return fmt.Errorf("%w: data do último pagamento nula", exceptions.ErrEmptyString)
 	}
 
 	p.dateLastPayment = dateLastPayment

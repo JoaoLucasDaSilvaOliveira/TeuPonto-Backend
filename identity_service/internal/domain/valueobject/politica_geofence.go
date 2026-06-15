@@ -1,9 +1,9 @@
 package valueobject
 
-type PoliticaGeofence string
+type GeofencePolicy string
 
 var (
-	APENAS_DENTRO_RAIO PoliticaGeofence = "APENAS_DENTRO_RAIO"
-	QUALQUER_LUGAR_TAG PoliticaGeofence = "QUALQUER_LUGAR_TAG"
-	QUALQUER_LUGAR PoliticaGeofence = "QUALQUER_LUGAR"
+	JUST_INSIDE_RADIUS GeofencePolicy = "JUST_INSIDE_RADIUS"
+	ANYWHERE_USING_TAG GeofencePolicy = "ANYWHERE_USING_TAG"
+	ANYWHERE GeofencePolicy = "ANYWHERE"
 )

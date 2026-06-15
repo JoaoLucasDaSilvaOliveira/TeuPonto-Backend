@@ -17,7 +17,7 @@ type Company struct {
 	cnpj                     valueobject.CNPJ
 	corporateName            string
 	businessName             string
-	geofencePolicy           valueobject.PoliticaGeofence
+	geofencePolicy           valueobject.GeofencePolicy
 	email                    valueobject.Email
 	defaultCalculationPolicy model.CalculationPolicy
 	companyOutsourceds       []Outsourced
@@ -88,11 +88,11 @@ func (c *Company) SetBusinessName(businessName string) error {
 	return nil
 }
 
-func (c *Company) GetGeofecePolicy() valueobject.PoliticaGeofence {
+func (c *Company) GetGeofecePolicy() valueobject.GeofencePolicy {
 	return c.geofencePolicy
 }
 
-func (c *Company) SetGeofecePolicy(geofecePolicy valueobject.PoliticaGeofence) {
+func (c *Company) SetGeofecePolicy(geofecePolicy valueobject.GeofencePolicy) {
 	c.geofencePolicy = geofecePolicy
 }
 
@@ -192,7 +192,7 @@ func NewCompany(
 	rawCNPJ string,
 	corporateName string,
 	businessName string,
-	geofencePolicy valueobject.PoliticaGeofence,
+	geofencePolicy valueobject.GeofencePolicy,
 	rawEmail string,
 	defaultCalculationPolicy model.CalculationPolicy,
 	companyOutsourceds []Outsourced,

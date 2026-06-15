@@ -10,14 +10,14 @@ import (
 type CPF string
 
 func NewCPF(rawCPF string) (CPF, error) {
-	//retirar os espaços
+	//remove spaces
 	rawCPF = strings.TrimSpace(rawCPF)
 
 	if !brdoc.IsCPF(rawCPF) {
 		return "", exceptions.ErrInvalidCPF
 	}
 
-	//retorna um cast de CPF, usa o retorno da função que separa somente os dígitos da string cpf
+	// returns a cast of the CPF, using the return value of the function that extracts only the digits from the CPF string.
 	return CPF(onlyDigits(rawCPF)), nil
 }
 

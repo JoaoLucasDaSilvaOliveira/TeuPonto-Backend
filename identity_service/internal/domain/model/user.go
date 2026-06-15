@@ -31,18 +31,15 @@ func NewUser(roleDef *RoleDefinition) *User {
 	
 func NewDefaultCompanyUser() *User {
 	newUser := NewUser(NewCompanyDefaultRoleDefinition())
-
 	return newUser
 }
 
 func NewDefaultSupervisorUser() *User {
 	newUser := NewUser(NewSupervisorDefaultRoleDefinition())
-
 	return newUser
 }
 
 func NewDefaultWorkerUser() *User {
 	newUser := NewUser(NewWorkerDefaultRoleDefinition())
-
 	return newUser
 }

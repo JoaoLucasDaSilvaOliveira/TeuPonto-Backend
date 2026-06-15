@@ -25,3 +25,7 @@ func NewEmail(rawEmail string) (Email, error) {
 
 	return Email(strings.ToLower(rawEmail)), nil
 }
+
+func (e Email) String() string {
+	return string(e)
+}

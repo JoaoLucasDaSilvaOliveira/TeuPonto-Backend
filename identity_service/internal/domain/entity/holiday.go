@@ -41,7 +41,7 @@ func (h *Holiday) GetDate() *time.Time {
 
 func (h *Holiday) SetDate(date *time.Time) error {
 	if date == nil {
-		return fmt.Errorf("%w: date nula", exceptions.ErrEmptyString)
+		return fmt.Errorf("%w: data nula", exceptions.ErrEmptyString)
 	}
 
 	h.date = date

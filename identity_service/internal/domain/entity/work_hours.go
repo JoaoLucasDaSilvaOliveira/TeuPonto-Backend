@@ -2,6 +2,7 @@ package entity
 
 import (
 	"fmt"
+	"slices"
 	"strings"
 	"time"
 
@@ -103,9 +104,31 @@ func (w *WorkHours) SetWorkShift(workShift []*shift) {
 	w.workload = calculateWorkload(w.workShift)
 }
 
-func (w *WorkHours) AddShift(newShift *shift) {
+func (w *WorkHours) AddShift(newShift *shift) error {
+	// check for duplicated
+	// use ContainsFunc to compare the value of hours,
+	// the simple Contains would compare the pointer's memory addresses  
+	if slices.ContainsFunc(w.workShift, func(s *shift) bool {
+		return s.entryTime == newShift.entryTime && s.exitTime == newShift.exitTime
+	}) {
+		return fmt.Errorf("%w: turno de trabalho já cadastrado", exceptions.ErrDuplicatedElement)
+	}
+
+	// check temporal logic
+	if len(w.workShift) > 0 {
+		lastShift := w.workShift[len(w.workShift)-1]
+
+		// the new entry time cannot be before (or in the exact minute) of the last exit
+		if newShift.entryTime.Before(lastShift.exitTime) || newShift.entryTime == lastShift.exitTime {
+			// O ideal seria criar um exceptions.ErrShiftOverlap no seu pacote de erros
+			return fmt.Errorf("%w: conflito de horários: a entrada (%v) não pode ser anterior ou igual à saída do turno anterior (%v)", exceptions.ErrInvalidTime, newShift.entryTime, lastShift.exitTime)
+		}
+	}
+	
 	w.workShift = append(w.workShift, newShift)
 	w.workload = calculateWorkload(w.workShift)
+
+	return nil
 }
 
 func (w *WorkHours) GetWorkload() time.Duration {

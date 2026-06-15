@@ -25,3 +25,7 @@ func NewCEP(rawCEP string, federativeUnit brdoc.FederativeUnit) (CEP, error) {
 
 	return CEP(trimmedCEP), nil
 }
+
+func (c CEP) String() string {
+	return string(c)
+}
