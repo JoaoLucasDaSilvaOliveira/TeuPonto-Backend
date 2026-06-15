@@ -9,8 +9,19 @@ type CalculationMode string
 const (
 	Direct   CalculationMode = "DIRECT"
 	TimeBank CalculationMode = "TIME_BANK"
-	//TODO: criar macros de informações padrão para:
-	// porcentagem padrão horas extras, tolerancia e etc
+	
+	// macros de informações padrão
+	DEFAULT_CYCLE_MONTHS_TIME_BANK = 6
+	DEFAULT_ENTRY_TOLERANCE_MINUTES_TIME_BANK = 5
+	DEFAULT_DAILY_TOLERANCE_MINUTES_TIME_BANK = 10
+	DEFAULT_CLOSING_CYCLE_EXTRA_PERCENT_TIME_BANK = 50
+
+	DEFAULT_ENTRY_TOLERANCE_MINUTES_DIRECT = 5
+	DEFAULT_DAILY_TOLERANCE_MINUTES_DIRECT = 10
+	DEFAULT_WEEKDAY_EXTRA_PERCENT_BEFORE_FIRST_TWO_HOURS_DIRECT = 50
+	DEFAULT_WEEKDAY_EXTRA_PERCENT_AFTER_FIRST_TWO_HOURS_DIRECT = 100
+	DEFAULT_SUNDAY_EXTRA_PERCENT_DIRECT = 100
+	DEFAULT_HOLIDAY_EXTRA_PERCENT_DIRECT = 100
 )
 
 type TimeBankCalculationPolicy struct {
@@ -77,7 +88,7 @@ func (tbcp *TimeBankCalculationPolicy) SetClosingCycleExtraPercent(closingCycleE
 }
 
 func NewDefaultTimeBankCalculationPolicy() (*TimeBankCalculationPolicy, error) {
-	return NewTimeBankCalculationPolicy(6, 5, 10, 50)
+	return NewTimeBankCalculationPolicy(DEFAULT_CYCLE_MONTHS_TIME_BANK, DEFAULT_ENTRY_TOLERANCE_MINUTES_TIME_BANK, DEFAULT_DAILY_TOLERANCE_MINUTES_TIME_BANK, DEFAULT_CLOSING_CYCLE_EXTRA_PERCENT_TIME_BANK)
 }
 
 func NewTimeBankCalculationPolicy(
@@ -199,7 +210,7 @@ func (dcp *DirectCalculationPolicy) SetHolidayExtraPercent(holidayExtraPercent i
 }
 
 func NewDefaultDirectCalculationPolicy() (*DirectCalculationPolicy, error) {
-	return NewDirectCalculationPolicy(5, 10, 50, 100, 100, 100)
+	return NewDirectCalculationPolicy(DEFAULT_ENTRY_TOLERANCE_MINUTES_DIRECT, DEFAULT_DAILY_TOLERANCE_MINUTES_DIRECT, DEFAULT_WEEKDAY_EXTRA_PERCENT_BEFORE_FIRST_TWO_HOURS_DIRECT, DEFAULT_WEEKDAY_EXTRA_PERCENT_AFTER_FIRST_TWO_HOURS_DIRECT, DEFAULT_SUNDAY_EXTRA_PERCENT_DIRECT, DEFAULT_HOLIDAY_EXTRA_PERCENT_DIRECT)
 }
 
 func NewDirectCalculationPolicy(

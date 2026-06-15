@@ -21,10 +21,6 @@ type Address struct {
 	codIbge          int
 }
 
-//TODO:
-// pesquisar e validar o range do cod ibge
-// cod ibge e number não podem ser negativos
-
 func (a *Address) GetID() uuid.UUID {
 	return a.id
 }
@@ -61,8 +57,14 @@ func (a *Address) GetNumber() int {
 	return a.number
 }
 
-func (a *Address) SetNumber(number int) {
+func (a *Address) SetNumber(number int) error {
+	if number < 0 {
+		return fmt.Errorf("%w: forneça o número da rua positivo ou 0 (s/n)", exceptions.ErrNegativeNumberNotAlowed)
+	}
+	
 	a.number = number
+
+	return nil
 }
 
 func (a *Address) GetNeighborhood() string {
@@ -120,7 +122,10 @@ func NewAddress(
 	address.SetCodIbge(codIbge)
 	address.SetLatitude(latitude)
 	address.SetLongitude(longitude)
-	address.SetNumber(number)
+
+	if err := address.SetNumber(number); err != nil {
+		return nil, err
+	}
 	
 	if err := address.SetCEP(rawCEP, federativeUnit); err != nil {
 		return nil, err
