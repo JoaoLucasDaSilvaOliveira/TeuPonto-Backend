@@ -17,3 +17,6 @@ bin/
 dist/
 build/
 coverage.out
+
+#for now
+clock_service
