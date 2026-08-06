@@ -19,4 +19,4 @@ build/
 coverage.out
 
 #for now
-clock_service
+# clock_service
